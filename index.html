@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>KLE Tech GeniusSphere AI</title>
+<meta name="description" content="KLE Tech GeniusSphere AI — Generative AI Mentor for 24EEIC319"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --red:#C8102E;--red-dark:#8B0000;--red-deep:#5C0010;
+  --red-light:#fdf0f2;--red-mid:#f5c8d0;
+  --white:#fff;--bg:#fdf8f8;--text:#1a0608;--muted:#6b3040;--border:#f0d0d5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
+#app{display:flex;height:100vh;overflow:hidden}
+
+/* SIDEBAR */
+#sidebar{
+  width:268px;min-width:268px;flex-shrink:0;
+  background:linear-gradient(175deg,var(--red-deep) 0%,var(--red-dark) 45%,var(--red) 100%);
+  display:flex;flex-direction:column;overflow:hidden;
+  transition:width .3s ease,min-width .3s ease;
+}
+#sidebar.closed{width:0;min-width:0}
+.sb-logo{
+  padding:22px 18px 16px;border-bottom:1px solid rgba(255,255,255,.12);
+  display:flex;align-items:center;gap:11px;flex-shrink:0;
+}
+.sb-logo-icon{
+  width:40px;height:40px;border-radius:11px;flex-shrink:0;
+  background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);
+  display:flex;align-items:center;justify-content:center;font-size:19px;
+}
+.sb-logo-text h1{font-family:'Syne',sans-serif;font-size:13.5px;font-weight:800;color:#fff;letter-spacing:.4px;line-height:1.25}
+.sb-logo-text p{font-size:10px;color:rgba(255,255,255,.6);margin-top:2px}
+.sb-scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:8px}
+.sb-scroll::-webkit-scrollbar{width:3px}
+.sb-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:2px}
+.sb-label{padding:13px 14px 5px;font-size:9px;font-weight:600;letter-spacing:1.6px;color:rgba(255,255,255,.38);text-transform:uppercase}
+.sb-item{
+  margin:1px 7px;padding:8px 11px;border-radius:8px;cursor:pointer;
+  font-size:12.5px;color:rgba(255,255,255,.82);transition:background .15s;
+  display:flex;align-items:center;gap:8px;
+}
+.sb-item:hover{background:rgba(255,255,255,.13);color:#fff}
+.sb-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.3);flex-shrink:0}
+.sb-footer{
+  padding:13px 16px;border-top:1px solid rgba(255,255,255,.1);
+  font-size:10px;color:rgba(255,255,255,.38);text-align:center;line-height:1.7;flex-shrink:0;
+}
+.sb-footer b{color:rgba(255,255,255,.58)}
+
+/* MAIN */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+/* TOPBAR */
+#topbar{
+  background:#fff;border-bottom:1px solid var(--border);
+  padding:0 18px;height:58px;display:flex;align-items:center;gap:12px;flex-shrink:0;
+}
+#menu-btn{
+  width:34px;height:34px;border-radius:8px;border:1px solid var(--border);
+  background:#fff;cursor:pointer;font-size:15px;color:var(--muted);
+  display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;
+}
+#menu-btn:hover{background:var(--red-light);color:var(--red);border-color:var(--red-mid)}
+.tb-info{flex:1;min-width:0}
+.tb-info h2{font-family:'Syne',sans-serif;font-size:14.5px;font-weight:800;color:var(--red-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-info p{font-size:10.5px;color:var(--muted);margin-top:1px}
+.tb-status{
+  display:flex;align-items:center;gap:5px;padding:4px 11px;
+  border-radius:20px;border:1px solid var(--border);font-size:11px;color:var(--muted);
+  background:#fff;flex-shrink:0;white-space:nowrap;
+}
+.tb-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;flex-shrink:0;transition:background .3s}
+.tb-dot.thinking{background:#f59e0b;animation:pulse 1s infinite}
+.tb-dot.err{background:#ef4444}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+#btn-new{
+  padding:6px 13px;background:var(--red);color:#fff;border:none;border-radius:8px;
+  font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;
+  transition:background .15s;flex-shrink:0;white-space:nowrap;
+}
+#btn-new:hover{background:var(--red-dark)}
+
+/* CHIPS */
+#chips{
+  background:#fff;border-bottom:1px solid var(--border);
+  padding:7px 16px;display:flex;gap:6px;overflow-x:auto;flex-shrink:0;
+}
+#chips::-webkit-scrollbar{display:none}
+.chip{
+  white-space:nowrap;padding:5px 12px;border-radius:20px;
+  border:1px solid var(--red-mid);background:var(--red-light);
+  color:var(--red);font-size:11.5px;font-weight:500;cursor:pointer;transition:all .15s;flex-shrink:0;
+}
+.chip:hover{background:var(--red);color:#fff;border-color:var(--red)}
+
+/* MESSAGES */
+#msgs{flex:1;overflow-y:auto;padding:20px 18px;display:flex;flex-direction:column;gap:16px}
+#msgs::-webkit-scrollbar{width:4px}
+#msgs::-webkit-scrollbar-thumb{background:var(--red-mid);border-radius:2px}
+.row{display:flex;gap:9px;align-items:flex-start}
+.row.user{flex-direction:row-reverse}
+.av{
+  width:32px;height:32px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;
+}
+.av.ai{background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff;border:2px solid var(--red)}
+.av.user{background:#fff;color:var(--red);border:2px solid var(--red)}
+.bub{
+  max-width:74%;padding:11px 15px;font-size:13.5px;line-height:1.75;
+  word-break:break-word;animation:pop .22s ease;
+}
+@keyframes pop{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.bub.ai{background:#fff;color:var(--text);border-radius:15px 15px 15px 4px;border:1px solid var(--border);white-space:pre-wrap}
+.bub.user{background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff;border-radius:15px 15px 4px 15px}
+.bub.errbub{background:#fff5f5;border:1px solid #fca5a5;color:#7f1d1d;border-radius:15px 15px 15px 4px;white-space:pre-wrap}
+.bub strong{font-weight:600}
+.bub em{font-style:italic;opacity:.85}
+.bub code{background:rgba(200,16,46,.08);color:var(--red-dark);padding:1px 5px;border-radius:4px;font-size:12px;font-family:monospace}
+.bub table{border-collapse:collapse;width:100%;margin:8px 0;font-size:12px}
+.bub th,.bub td{border:1px solid var(--border);padding:6px 9px;text-align:left}
+.bub th{background:var(--red-light);color:var(--red-dark);font-weight:600}
+.bub tr:nth-child(even) td{background:#fdf5f5}
+.typing{background:#fff;border:1px solid var(--border);border-radius:15px 15px 15px 4px;padding:11px 14px;display:flex;gap:4px;align-items:center}
+.td{width:7px;height:7px;border-radius:50%;background:var(--red);animation:bk 1.2s infinite}
+@keyframes bk{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+
+/* WELCOME */
+#welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 18px;text-align:center;overflow-y:auto}
+.wlc-icon{width:76px;height:76px;border-radius:22px;background:linear-gradient(135deg,var(--red),var(--red-dark));display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:18px;box-shadow:0 8px 28px rgba(200,16,46,.28);flex-shrink:0}
+#welcome h2{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--red-dark);margin-bottom:7px}
+#welcome .tag{font-size:13.5px;color:var(--muted);font-style:italic;margin-bottom:5px;max-width:400px}
+#welcome .sub{font-size:12px;color:var(--muted);max-width:420px;line-height:1.65;margin-bottom:26px}
+.wgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;max-width:480px;width:100%}
+.wcard{background:#fff;border:1.5px solid var(--border);border-radius:13px;padding:15px;cursor:pointer;text-align:left;transition:all .2s}
+.wcard:hover{border-color:var(--red);box-shadow:0 4px 18px rgba(200,16,46,.12);transform:translateY(-1px)}
+.wcard-icon{font-size:20px;margin-bottom:7px}
+.wcard-title{font-family:'Syne',sans-serif;font-size:12.5px;font-weight:700;color:var(--red-dark);margin-bottom:3px}
+.wcard-desc{font-size:11px;color:var(--muted);line-height:1.5}
+
+/* INPUT */
+#inputbar{background:#fff;border-top:1px solid var(--border);padding:12px 16px;flex-shrink:0}
+.inp-wrap{
+  display:flex;gap:9px;align-items:flex-end;
+  background:var(--bg);border:1.5px solid var(--red-mid);border-radius:13px;padding:8px 12px;
+  transition:border-color .2s,box-shadow .2s;
+}
+.inp-wrap:focus-within{border-color:var(--red);box-shadow:0 0 0 3px rgba(200,16,46,.07)}
+#inp{
+  flex:1;background:transparent;border:none;outline:none;
+  font-family:'Inter',sans-serif;font-size:13.5px;color:var(--text);
+  line-height:1.6;resize:none;max-height:110px;overflow-y:auto;min-height:22px;
+}
+#inp::placeholder{color:#c0a0a8}
+#sbtn{
+  width:37px;height:37px;border-radius:9px;border:none;
+  background:var(--red);color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;
+}
+#sbtn:hover:not(:disabled){background:var(--red-dark)}
+#sbtn:disabled{background:var(--red-mid);cursor:not-allowed}
+#sbtn svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.inp-hint{font-size:10.5px;color:#c8a8b0;text-align:center;margin-top:6px}
+
+/* MOBILE */
+@media(max-width:640px){
+  #sidebar{position:fixed;top:0;left:0;height:100vh;z-index:200}
+  .bub{max-width:87%}
+  .wgrid{grid-template-columns:1fr}
+  #welcome h2{font-size:20px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-icon">🎓</div>
+      <div class="sb-logo-text">
+        <h1>GENIUSPHERE AI</h1>
+        <p>KLE Tech · 24EEIC319 · VI Sem</p>
+      </div>
+    </div>
+    <div class="sb-scroll">
+      <div class="sb-label">Unit I</div>
+      <div class="sb-item" onclick="ask('Explain Introduction to Generative AI: definition, overview, importance, applications, evolution of AI, key milestones and breakthroughs, and the difference between generative and discriminative learning with examples.')"><div class="sb-dot"></div>Ch 1 — Intro to GenAI</div>
+      <div class="sb-item" onclick="ask('Explain Generative Models: Autoencoders with encoder/decoder/latent space, VAEs with ELBO derivation and reparameterization trick, GANs with generator/discriminator/training process/mode collapse and variants DCGAN/CycleGAN/StyleGAN, Diffusion Models with forward noising and reverse denoising process and score matching. Include ASCII architecture diagrams.')"><div class="sb-dot"></div>Ch 2 — AE · VAE · GAN · Diffusion</div>
+      <div class="sb-item" onclick="ask('Explain Training and Evaluation of Generative Models: all optimizers GD/SGD/Adam/RMSProp/Adagrad/AdaDelta with update rules, all evaluation metrics IS/FID/Perplexity/Reconstruction Error/BLEU/Wasserstein Distance/EMD with formulas, and training challenges like mode collapse with solutions.')"><div class="sb-dot"></div>Ch 3 — Training & Evaluation</div>
+      <div class="sb-item" onclick="ask('Explain Autoregressive Models: the autoregressive property and conditional dependence with probability chain rule, ARIMA model with p/d/q parameters and stationarity, PixelCNN with masked convolutions types A and B, and WaveNet with dilated causal convolutions. Include architecture diagrams and applications.')"><div class="sb-dot"></div>Ch 4 — Autoregressive Models</div>
+      <div class="sb-label">Unit II</div>
+      <div class="sb-item" onclick="ask('Explain Transformers in complete detail: origin from RNNs/LSTMs, self-attention with Q/K/V matrices and scaled dot-product formula, multi-head attention, positional encoding, encoder-decoder stacks, masked self-attention. Then compare GPT vs BERT vs T5 in a detailed table covering architecture type, training objective, attention direction, and best use cases.')"><div class="sb-dot"></div>Ch 5 — Transformers</div>
+      <div class="sb-item" onclick="ask('Explain Large Language Models: what makes a model large, GPT-3 and GPT-4 overview, training methodologies, scaling laws, fine-tuning techniques RLHF/LoRA/Prompt Tuning/Instruction Tuning, transfer learning, and building LLM applications with RAG, AI Agents, and Multimodal AI.')"><div class="sb-dot"></div>Ch 6 — Large Language Models</div>
+      <div class="sb-item" onclick="ask('Explain Ethical Considerations and Responsible AI in Generative AI: types of bias, fairness metrics, privacy concerns and data memorization, deepfake risks, copyright issues, mitigation strategies including differential privacy, federated learning, adversarial debiasing, watermarking, and AI governance frameworks.')"><div class="sb-dot"></div>Ch 7 — Ethical AI</div>
+      <div class="sb-label">Study Tools</div>
+      <div class="sb-item" onclick="ask('Generate a complete exam question bank for Generative AI course 24EEIC319 covering all 7 chapters. Include 10 questions of 2 marks, 6 questions of 5 marks, 4 questions of 10 marks, 10 MCQs, and 5 viva questions.')"><div class="sb-dot"></div>📝 Full Exam Question Bank</div>
+      <div class="sb-item" onclick="ask('Give me comprehensive viva and interview questions for Generative AI covering all topics: AE, VAE, GAN, Diffusion Models, ARIMA, PixelCNN, WaveNet, Transformers, GPT/BERT/T5, LLMs, Fine-tuning, RAG, Ethical AI. Categorize as Beginner, Intermediate, Advanced.')"><div class="sb-dot"></div>🎤 Interview & Viva Prep</div>
+      <div class="sb-item" onclick="ask('Teach me Prompt Engineering from scratch: zero-shot, few-shot, chain-of-thought, role prompting, instruction prompting with real examples. Then evaluate and score this prompt: explain neural networks')"><div class="sb-dot"></div>⚡ Prompt Engineering</div>
+      <div class="sb-item" onclick="ask('Give me a complete quick revision summary of all 7 chapters of Generative AI course 24EEIC319. Key formulas, architectures, and must-remember points for each chapter as concise bullet points.')"><div class="sb-dot"></div>📋 Quick Revision Notes</div>
+    </div>
+    <div class="sb-footer">
+      <b>KLE Technological University</b><br/>
+      School of ECE · 2024–25<br/>
+      Powered by Google Gemini AI
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main">
+
+    <!-- TOPBAR -->
+    <div id="topbar">
+      <button id="menu-btn" onclick="toggleSidebar()">☰</button>
+      <div class="tb-info">
+        <h2>KLE TECH GENIUSPHERE AI</h2>
+        <p>Generative AI · 24EEIC319 · VI Semester · KLE Tech</p>
+      </div>
+      <div class="tb-status">
+        <div class="tb-dot" id="tdot"></div>
+        <span id="ttext">Ready</span>
+      </div>
+      <button id="btn-new" onclick="newChat()">+ New Chat</button>
+    </div>
+
+    <!-- CHIPS -->
+    <div id="chips">
+      <div class="chip" onclick="ask('Explain GAN architecture in detail with generator, discriminator, training process, loss functions, Nash equilibrium, mode collapse problem and solutions. Include ASCII diagram.')">🎨 GAN Architecture</div>
+      <div class="chip" onclick="ask('Compare GPT, BERT and T5 in a detailed table. Cover architecture type, training objective, attention direction, pre-training task, strengths, weaknesses, and best use cases.')">⚡ GPT vs BERT vs T5</div>
+      <div class="chip" onclick="ask('Explain Transformer self-attention mechanism step by step: Query/Key/Value matrices, scaled dot-product attention formula with sqrt(dk), multi-head attention, why better than RNN. Include formula and diagram.')">🔀 Self-Attention</div>
+      <div class="chip" onclick="ask('Explain VAE in detail: difference from AE, ELBO objective with KL divergence and reconstruction loss, reparameterization trick, why latent space is continuous. Include architecture diagram.')">📐 VAE & ELBO</div>
+      <div class="chip" onclick="ask('Explain Diffusion Models: forward Gaussian noising process, reverse DDPM denoising objective, score matching, guided diffusion and classifier-free guidance. Compare with GANs.')">🌫️ Diffusion Models</div>
+      <div class="chip" onclick="ask('Explain all Generative AI evaluation metrics: FID, Inception Score, BLEU, Perplexity, Reconstruction Error, Wasserstein Distance, Earth Mover Distance — with formulas, what each measures, and when to use.')">📊 Eval Metrics</div>
+      <div class="chip" onclick="ask('Generate 10-mark exam questions on Transformers and LLMs as per KLE Tech 24EEIC319 exam pattern with detailed model answers.')">📝 Exam Prep</div>
+      <div class="chip" onclick="ask('Explain ARIMA(p,d,q) model fully: AR/I/MA components, choosing parameters, ADF stationarity test, and compare with PixelCNN and WaveNet autoregressive approaches.')">📈 ARIMA Model</div>
+    </div>
+
+    <!-- WELCOME SCREEN -->
+    <div id="welcome">
+      <div class="wlc-icon">🎓</div>
+      <h2>Welcome to GeniusSphere AI</h2>
+      <p class="tag">"Learn Generative AI Beyond Notes — Think, Visualize, Build, and Master."</p>
+      <p class="sub">Your dedicated AI mentor for <strong>Generative AI (24EEIC319)</strong>, VI Semester, KLE Tech.<br/>Powered by Google Gemini AI — free, fast, always available.</p>
+      <div class="wgrid">
+        <div class="wcard" onclick="ask('Give me a complete overview of all 7 chapters of Generative AI course 24EEIC319 with key topics and learning outcomes CO1, CO2, CO3.')">
+          <div class="wcard-icon">📚</div>
+          <div class="wcard-title">Course Overview</div>
+          <div class="wcard-desc">All 7 chapters, learning outcomes, exam focus areas</div>
+        </div>
+        <div class="wcard" onclick="ask('Compare and explain all four major generative model architectures: Autoencoders, VAEs, GANs, and Diffusion Models with ASCII diagrams and comparison table.')">
+          <div class="wcard-icon">🏗️</div>
+          <div class="wcard-title">Architecture Deep Dive</div>
+          <div class="wcard-desc">AE, VAE, GAN, Diffusion — diagrams & comparisons</div>
+        </div>
+        <div class="wcard" onclick="ask('Generate complete exam questions for Generative AI 24EEIC319: 2-mark, 5-mark, 10-mark questions for all chapters, MCQs and viva questions.')">
+          <div class="wcard-icon">📝</div>
+          <div class="wcard-title">Exam Preparation</div>
+          <div class="wcard-desc">2, 5 & 10 mark Q&A, MCQs, viva, model answers</div>
+        </div>
+        <div class="wcard" onclick="ask('Teach me prompt engineering: zero-shot, few-shot, chain-of-thought, role prompting. Then evaluate and improve this prompt: explain AI')">
+          <div class="wcard-icon">⚡</div>
+          <div class="wcard-title">Prompt Engineering</div>
+          <div class="wcard-desc">Score & improve prompts with coaching</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAT MESSAGES -->
+    <div id="msgs" style="display:none"></div>
+
+    <!-- INPUT BAR -->
+    <div id="inputbar">
+      <div class="inp-wrap">
+        <textarea id="inp" rows="1" placeholder="Ask anything — architectures, exam questions, comparisons, code, ethics..." oninput="resize(this)"></textarea>
+        <button id="sbtn" onclick="send()" title="Send">
+          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="inp-hint">Enter to send · Shift+Enter for new line · Powered by Gemini AI</div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+// ── STATE ─────────────────────────────────────────────
+let history  = [];
+let busy     = false;
+let sbOpen   = true;
+
+// ── INIT ──────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('inp').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+  });
+  if (window.innerWidth <= 640) {
+    sbOpen = false;
+    document.getElementById('sidebar').classList.add('closed');
+  }
+});
+
+// ── HELPERS ───────────────────────────────────────────
+function toggleSidebar() {
+  sbOpen = !sbOpen;
+  document.getElementById('sidebar').classList.toggle('closed', !sbOpen);
+}
+
+function resize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 110) + 'px';
+}
+
+function setStatus(s) {
+  busy = s === 'thinking';
+  const dot = document.getElementById('tdot');
+  const txt = document.getElementById('ttext');
+  dot.className = 'tb-dot' + (s === 'thinking' ? ' thinking' : s === 'err' ? ' err' : '');
+  txt.textContent = s === 'thinking' ? 'Thinking...' : s === 'err' ? 'Error' : 'Ready';
+  document.getElementById('sbtn').disabled = busy;
+}
+
+function showChat() {
+  document.getElementById('welcome').style.display = 'none';
+  document.getElementById('msgs').style.display    = 'flex';
+}
+
+function newChat() {
+  history = [];
+  document.getElementById('msgs').innerHTML = '';
+  document.getElementById('msgs').style.display    = 'none';
+  document.getElementById('welcome').style.display = 'flex';
+  document.getElementById('inp').value = '';
+  document.getElementById('inp').style.height = 'auto';
+  setStatus('ready');
+}
+
+// ── FORMAT TEXT ───────────────────────────────────────
+function fmt(raw) {
+  // Escape HTML
+  let t = raw.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  // Tables
+  t = t.replace(/((\|[^\n]+\|\n?)+)/g, match => {
+    const rows = match.trim().split('\n').filter(r => r.trim());
+    let html = '<table>';
+    let header = true;
+    for (const row of rows) {
+      if (/^\|[\s\-:|]+\|$/.test(row.trim())) { header = false; continue; }
+      const cells = row.split('|').slice(1, -1);
+      const tag = header ? 'th' : 'td';
+      html += '<tr>' + cells.map(c => `<${tag}>${c.trim()}</${tag}>`).join('') + '</tr>';
+      header = false;
+    }
+    return html + '</table>';
+  });
+
+  // Bold, italic, inline code
+  t = t
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,     '<em>$1</em>')
+    .replace(/`([^`]+)`/g,     '<code>$1</code>')
+    .replace(/\n/g, '<br/>');
+
+  return t;
+}
+
+// ── ADD MESSAGE ───────────────────────────────────────
+function addMsg(role, text, isErr = false) {
+  showChat();
+  const box = document.getElementById('msgs');
+  const row = document.createElement('div');
+  row.className = 'row ' + role;
+
+  const av = document.createElement('div');
+  av.className = 'av ' + role;
+  av.textContent = role === 'ai' ? 'AI' : 'U';
+
+  const bub = document.createElement('div');
+  bub.className = isErr ? 'bub errbub' : 'bub ' + role;
+
+  if (role === 'user') {
+    bub.textContent = text;
+  } else {
+    bub.innerHTML = fmt(text);
+  }
+
+  row.appendChild(av);
+  row.appendChild(bub);
+  box.appendChild(row);
+  box.scrollTop = box.scrollHeight;
+}
+
+function addTyping() {
+  showChat();
+  const box = document.getElementById('msgs');
+  const row = document.createElement('div');
+  row.className = 'row ai';
+  row.id = 'typing';
+  row.innerHTML = `<div class="av ai">AI</div>
+    <div class="typing">
+      <div class="td" style="animation-delay:0s"></div>
+      <div class="td" style="animation-delay:.18s"></div>
+      <div class="td" style="animation-delay:.36s"></div>
+    </div>`;
+  box.appendChild(row);
+  box.scrollTop = box.scrollHeight;
+}
+
+function rmTyping() { document.getElementById('typing')?.remove(); }
+
+// ── SEND ──────────────────────────────────────────────
+async function send() {
+  const inp  = document.getElementById('inp');
+  const text = inp.value.trim();
+  if (!text || busy) return;
+
+  inp.value = '';
+  inp.style.height = 'auto';
+
+  addMsg('user', text);
+  history.push({ role: 'user', content: text });
+
+  setStatus('thinking');
+  addTyping();
+
+  try {
+    const res = await fetch('/.netlify/functions/chat', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ history }),
+    });
+
+    rmTyping();
+
+    let data = {};
+    try { data = await res.json(); } catch(_) {}
+
+    if (!res.ok) {
+      throw new Error(data.error || `Server error (HTTP ${res.status})`);
+    }
+
+    if (!data.reply) {
+      throw new Error('Empty response from AI. Please try again.');
+    }
+
+    addMsg('ai', data.reply);
+    history.push({ role: 'ai', content: data.reply });
+    setStatus('ready');
+
+  } catch (err) {
+    rmTyping();
+    setStatus('err');
+
+    let msg = err.message || 'AI service temporarily unavailable.';
+    if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
+      msg = 'Network error — please check your internet connection and try again.';
+    }
+
+    addMsg('ai', '⚠️ ' + msg, true);
+    setTimeout(() => setStatus('ready'), 2500);
+  }
+}
+
+// shorthand for sidebar / chip clicks
+function ask(q) {
+  document.getElementById('inp').value = q;
+  send();
+  if (window.innerWidth <= 640) {
+    sbOpen = false;
+    document.getElementById('sidebar').classList.add('closed');
+  }
+}
+</script>
+</body>
+</html>
